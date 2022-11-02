@@ -1,4 +1,3 @@
-vim.opt.guicursor = ""
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
@@ -15,6 +14,7 @@ vim.opt.splitbelow = true
 vim.opt.wrap = false
 vim.g.mapleader = " "
 vim.g.netrw_bufsettings = 'nu relativenumber'
+vim.g.netrw_banner = 0
 
 
 
