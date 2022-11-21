@@ -24,4 +24,6 @@ return require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter'
   use 'windwp/nvim-ts-autotag'
   use 'windwp/nvim-autopairs'
+  use 'phaazon/hop.nvim'
+  use 'ThePrimeagen/harpoon'
 end)

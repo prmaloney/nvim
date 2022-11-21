@@ -11,11 +11,8 @@ vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-
+vim.opt.signcolumn = 'yes'
 vim.opt.wrap = false
 vim.g.mapleader = " "
 vim.g.netrw_bufsettings = 'nu relativenumber'
 vim.g.netrw_banner = 0
-
-
-
