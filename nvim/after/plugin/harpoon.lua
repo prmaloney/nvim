@@ -1,4 +1,4 @@
-local nnoremap = require('noodledog.keymap').nnoremap
+local nnoremap = require('prmaloney.keymap').nnoremap
 local harpoon_mark = require('harpoon.mark')
 local harpoon_ui = require('harpoon.ui')
 local harpoon_term = require('harpoon.term')
