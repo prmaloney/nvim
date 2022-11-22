@@ -1,6 +1,5 @@
 local nnoremap = require('prmaloney.keymap').nnoremap
 local inoremap = require('prmaloney.keymap').inoremap
-local tnoremap = require('prmaloney.keymap').tnoremap
 local vnoremap = require('prmaloney.keymap').vnoremap
 -- file explorer and terminal
 nnoremap("<leader>a", "<cmd>Ex<CR>")
@@ -13,7 +12,14 @@ nnoremap("<C-j>", "<C-w>j")
 nnoremap("<C-k>", "<C-w>k")
 nnoremap("<C-l>", "<C-w>l")
 
-tnoremap("<Esc>", "<C-\\><C-n>")
+--keep vertical jumps centered
+nnoremap('<C-u>', '<C-u>zz')
+nnoremap('<C-d>', '<C-d>zz')
+
+-- move lines up/down
+vnoremap("J", ":m '>+1<CR>gv=gv")
+vnoremap("K", ":m '<-2<CR>gv=gv")
+
 inoremap("jj", "<Esc>")
 
 vnoremap("<C-/>", ":norm i//<CR>")

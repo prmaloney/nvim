@@ -4,6 +4,8 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   use 'folke/tokyonight.nvim'
+  use({ 'rose-pine/neovim', as = 'rose-pine' })
+  use({ "catppuccin/nvim", as = "catppuccin" })
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/nvim-cmp'
   use {
@@ -25,4 +27,6 @@ return require('packer').startup(function(use)
   use 'windwp/nvim-ts-autotag'
   use 'windwp/nvim-autopairs'
   use 'ThePrimeagen/harpoon'
+  use 'ggandor/leap.nvim'
+  use 'numToStr/Comment.nvim'
 end)
