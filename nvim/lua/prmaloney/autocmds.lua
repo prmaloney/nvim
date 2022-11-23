@@ -1,6 +1,3 @@
-vim.cmd [[autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll]]
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format({ async = true })]]
-
 local function file_exists(name)
   local f = io.open(name, "r")
   if f ~= nil then io.close(f) return true else return false end
@@ -13,4 +10,14 @@ function start_server_if_project()
   end
 end
 
-vim.cmd [[autocmd VimEnter * lua start_server_if_project()]]
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = start_server_if_project
+})
+
+vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
+  pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
+  callback = function()
+    vim.cmd [[EslintFixAll]]
+    vim.cmd [[write]]
+  end
+})

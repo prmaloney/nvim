@@ -29,4 +29,12 @@ return require('packer').startup(function(use)
   use 'ThePrimeagen/harpoon'
   use 'ggandor/leap.nvim'
   use 'numToStr/Comment.nvim'
+  use {
+    'jinh0/eyeliner.nvim',
+    config = function()
+      require 'eyeliner'.setup {
+        highlight_on_key = true
+      }
+    end
+  }
 end)

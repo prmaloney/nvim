@@ -99,6 +99,11 @@ _G.packer_plugins = {
     path = "/Users/patrickmaloney/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
     url = "https://github.com/hrsh7th/cmp-nvim-lsp"
   },
+  ["eyeliner.nvim"] = {
+    loaded = true,
+    path = "/Users/patrickmaloney/.local/share/nvim/site/pack/packer/start/eyeliner.nvim",
+    url = "https://github.com/jinh0/eyeliner.nvim"
+  },
   ["git.nvim"] = {
     loaded = true,
     path = "/Users/patrickmaloney/.local/share/nvim/site/pack/packer/start/git.nvim",
