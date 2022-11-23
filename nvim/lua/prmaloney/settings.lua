@@ -13,6 +13,7 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.signcolumn = 'yes'
 vim.opt.wrap = false
+vim.opt.clipboard = 'unnamed'
 vim.g.mapleader = " "
 vim.g.netrw_bufsettings = 'nu relativenumber'
 vim.g.netrw_banner = 0
