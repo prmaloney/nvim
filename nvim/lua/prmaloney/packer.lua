@@ -19,9 +19,16 @@ return require('packer').startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'glepnir/lspsaga.nvim'
+  use 'mfussenegger/nvim-dap'
   use 'kylechui/nvim-surround'
   use 'dinhhuy258/git.nvim'
   use 'akinsho/toggleterm.nvim'
+  use {
+    "klen/nvim-test",
+    config = function()
+      require('nvim-test').setup {}
+    end
+  }
   use 'lukas-reineke/indent-blankline.nvim'
   use 'nvim-treesitter/nvim-treesitter'
   use 'windwp/nvim-ts-autotag'
