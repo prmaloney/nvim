@@ -15,7 +15,9 @@ vim.opt.splitbelow = true
 vim.opt.signcolumn = 'yes'
 vim.opt.wrap = false
 vim.opt.clipboard = 'unnamed'
+vim.opt.swapfile = false
+vim.opt.colorcolumn = '80'
 
 vim.g.mapleader = " "
-vim.g.netrw_bufsettings = 'nu relativenumber'
-vim.g.netrw_banner = 0
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1

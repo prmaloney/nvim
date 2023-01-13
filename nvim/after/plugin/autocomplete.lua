@@ -33,10 +33,10 @@ cmp.setup({
       end
     end, { 'i', 's' }),
   }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
+  sources = {
     { name = 'luasnip' },
-  }),
+    { name = 'nvim_lsp' },
+  },
   formatting = {
     format = lspkind.cmp_format({ with_text = false, maxwidth = 50 })
   }
