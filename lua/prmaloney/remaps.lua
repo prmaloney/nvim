@@ -2,8 +2,6 @@ local nnoremap = require('prmaloney.keymap').nnoremap
 local inoremap = require('prmaloney.keymap').inoremap
 local vnoremap = require('prmaloney.keymap').vnoremap
 local tnoremap = require('prmaloney.keymap').tnoremap
--- file explorer and terminal
-nnoremap("<leader>a", "<cmd>Ex<CR>")
 
 --split creation and navigation
 nnoremap('<leader>v', '<C-w>v')
