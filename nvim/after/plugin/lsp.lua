@@ -12,6 +12,8 @@ local on_attach = function(client, bufnr)
   end
 end
 
+nvim_lsp.html.setup {}
+
 -- TypeScript
 nvim_lsp.tsserver.setup {
   on_attach = on_attach,
@@ -19,6 +21,13 @@ nvim_lsp.tsserver.setup {
   cmd = { "typescript-language-server", "--stdio" }
 }
 
+-- Elixir
+nvim_lsp.elixirls.setup {
+  on_attach = on_attach,
+  cmd = { "/Users/patrickmaloney/elixir/language_server.sh" }
+}
+
+-- EsLint
 nvim_lsp.eslint.setup {
   on_attach = on_attach,
 }
@@ -27,6 +36,7 @@ local runtime_path = vim.split(package.path, ";")
 table.insert(runtime_path, "lua/?.lua")
 table.insert(runtime_path, "lua/?/init.lua")
 
+-- Lua
 nvim_lsp.sumneko_lua.setup({
   on_attach = on_attach,
   settings = {

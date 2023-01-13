@@ -10,8 +10,8 @@ local silent = { silent = true }
 
 nnoremap('<C-m>', function() harpoon_mark.add_file() end, silent)
 nnoremap('<leader>hp', function() harpoon_ui.toggle_quick_menu() end, silent)
-nnoremap('<C-1>', function() harpoon_term.gotoTerminal(1) end, silent)
-nnoremap('<C-2>', function() harpoon_term.gotoTerminal(2) end, silent)
+nnoremap('<leader>u', function() harpoon_term.gotoTerminal(1) end, silent)
+nnoremap('<leader>i', function() harpoon_term.gotoTerminal(2) end, silent)
 nnoremap('<leader>j', function() harpoon_ui.nav_file(1) end, silent)
 nnoremap('<leader>k', function() harpoon_ui.nav_file(2) end, silent)
 nnoremap('<leader>l', function() harpoon_ui.nav_file(3) end, silent)
