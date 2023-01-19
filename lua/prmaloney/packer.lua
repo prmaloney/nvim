@@ -3,7 +3,6 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
-  use 'folke/tokyonight.nvim'
   use({ 'rose-pine/neovim', as = 'rose-pine' })
   use({ 'catppuccin/nvim', as = 'catppuccin' })
   use {
@@ -14,6 +13,8 @@ return require('packer').startup(function(use)
   }
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/nvim-cmp'
+  use 'williamboman/mason.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
     requires = { { 'nvim-lua/plenary.nvim' } }
@@ -32,7 +33,7 @@ return require('packer').startup(function(use)
   use 'dinhhuy258/git.nvim'
   use 'akinsho/toggleterm.nvim'
   use {
-    "klen/nvim-test",
+    'klen/nvim-test',
     config = function()
       require('nvim-test').setup {}
     end
@@ -58,4 +59,5 @@ return require('packer').startup(function(use)
     requires = { 'nvim-tree/nvim-web-devicons' },
   }
   use 'ellisonleao/glow.nvim'
+  use 'folke/'
 end)

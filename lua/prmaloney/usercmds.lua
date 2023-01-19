@@ -1,7 +1,11 @@
+local M = {}
+M.search_config = function(opts)
+  vim.cmd('silent cd ~/.config/nvim')
+  require('telescope.builtin').find_files(opts)
+end
+
 vim.api.nvim_create_user_command('Config',
-  function()
-    require('telescope.builtin').find_files({ search_dirs = { '~/.config/nvim' } })
-  end
+  M.search_config
   , {})
 
 vim.api.nvim_create_user_command('Reload',
@@ -13,3 +17,5 @@ vim.api.nvim_create_user_command('Reload',
     dofile(vim.env.MYVIMRC)
   end
   , {})
+
+return M

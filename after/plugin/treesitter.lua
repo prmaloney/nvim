@@ -15,7 +15,8 @@ ts.setup {
     "json",
     "css",
     "html",
-    "lua"
+    "lua",
+    "elixir"
   },
 }
 

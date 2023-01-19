@@ -4,7 +4,7 @@ local harpoon_ui = require('harpoon.ui')
 local harpoon_term = require('harpoon.term')
 local harpoon = require('harpoon')
 
-harpoon.setup({ enter_on_sendcmd = true })
+harpoon.setup({ enter_on_sendcmd = true, mark_branch = true })
 
 local silent = { silent = true }
 

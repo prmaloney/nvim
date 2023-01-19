@@ -3,7 +3,7 @@ require("toggleterm").setup {
   direction = "vertical",
   size = 60,
   on_open = function(term)
-    vim.api.nvim_buf_set_keymap(term.bufnr, 't', '<esc>', '<c-\\><c-n>', { noremap = true, silent = true })
+    require('prmaloney.keymap').tnoremap('<esc>', '<c-\\><c-n>')
   end
 }
 local nnoremap = require('prmaloney.keymap').nnoremap

@@ -1,9 +1,25 @@
+local autoprojects = {
+  {
+    path = '/foobar/holoride',
+    cmd = 'yarn dev'
+  },
+  {
+    path = '/foobar/abicht-website',
+    cmd = 'yarn dev'
+  },
+  {
+    path = '/foobar/family-service',
+    cmd = 'source .env && mix phx.server'
+  },
+}
+
 function Start_server_if_project()
-  if require('prmaloney.utils').fileExists("package.json") then
-    require('harpoon.term').sendCommand(1, 'yarn dev')
-    -- start alpha screen if no argc given
-    if vim.fn.argc() == 0 then
-      require('alpha').start(false)
+  for _, proj in ipairs(autoprojects) do
+    if string.find(vim.fn.getcwd(), os.getenv('HOME') .. proj.path, 0, true) then
+      require('harpoon.term').sendCommand(1, proj.cmd)
+      if vim.fn.argc() == 0 then
+        require('alpha').start(false)
+      end
     end
   end
 end

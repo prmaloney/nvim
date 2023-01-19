@@ -2,6 +2,10 @@ local nnoremap = require('prmaloney.keymap').nnoremap
 
 require('telescope').setup {
   defaults = {
+    layout_strategy = 'cursor',
+    layout_config = {
+      cursor = { width = 0.75, height = 0.5, preview_width = 0.4 }
+    },
     mappings = {
       i = {
         ["<esc>"] = require('telescope.actions').close,
@@ -26,6 +30,23 @@ nnoremap('<leader>F', function() require("telescope.builtin").live_grep() end)
 nnoremap('<leader>bf', function() require("telescope.builtin").buffers() end)
 nnoremap('<leader>br', function() require("telescope.builtin").git_branches() end)
 nnoremap('<leader>st', function() require("telescope.builtin").git_stash() end)
+nnoremap('<leader>pr', function()
+  local projects = vim.split(vim.fn.glob('~/foobar/*'), '\n')
+  require('telescope.pickers').new({}, {
+    prompt_title = 'projects',
+    finder = require('telescope.finders').new_table { results = projects },
+    sorter = require('telescope.config').values.generic_sorter(),
+    attach_mappings = function(prompt_bufnr)
+      local actions = require('telescope.actions')
+      actions.select_default:replace(function()
+        actions.close(prompt_bufnr)
+        local selection = require('telescope.actions.state').get_selected_entry()
+        vim.cmd('silent cd ' .. selection[1])
+      end)
+      return true
+    end
+  }):find()
+end)
 nnoremap('<leader>no', function()
   if not require('prmaloney.utils').fileExists('package.json') then
     error('no package.json file found')

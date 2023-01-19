@@ -1,10 +1,6 @@
 require('lspsaga').setup {
   ui = {
     border = 'single',
-    colors = {
-      normal_bg = '#000000',
-      title_bg = '#777777'
-    }
   }
 }
 local nnoremap = require('prmaloney.keymap').nnoremap
