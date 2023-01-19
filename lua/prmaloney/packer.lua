@@ -59,5 +59,4 @@ return require('packer').startup(function(use)
     requires = { 'nvim-tree/nvim-web-devicons' },
   }
   use 'ellisonleao/glow.nvim'
-  use 'folke/'
 end)
