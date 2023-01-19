@@ -4,6 +4,7 @@
 ## install
 - you'll need to install [neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) if you haven't already
 - clone this repo into your config directory (usually `$HOME/.config/nvim`
+- open neovim and run `:PackerSync` to install all the plugins 
 
 That's it, you should be good to go
 
