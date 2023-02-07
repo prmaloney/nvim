@@ -13,11 +13,11 @@ local autoprojects = {
   },
 }
 
-function Start_server_if_project()
+function Start_server_if_project(opts)
   for _, proj in ipairs(autoprojects) do
     if string.find(vim.fn.getcwd(), os.getenv('HOME') .. proj.path, 0, true) then
       require('harpoon.term').sendCommand(1, proj.cmd)
-      if vim.fn.argc() == 0 then
+      if vim.fn.argc() == 0 or opts.startAlpha then
         require('alpha').start(false)
       end
     end
@@ -37,3 +37,6 @@ vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
     vim.cmd [[write]]
   end
 })
+
+local M = { start_server_if_project = Start_server_if_project }
+return M

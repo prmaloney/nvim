@@ -32,6 +32,7 @@ nnoremap('<leader>br', function() require("telescope.builtin").git_branches() en
 nnoremap('<leader>st', function() require("telescope.builtin").git_stash() end)
 nnoremap('<leader>pr', function()
   local projects = vim.split(vim.fn.glob('~/foobar/*'), '\n')
+  table.insert(projects, '~/.config/nvim')
   require('telescope.pickers').new({}, {
     prompt_title = 'projects',
     finder = require('telescope.finders').new_table { results = projects },
@@ -41,7 +42,9 @@ nnoremap('<leader>pr', function()
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = require('telescope.actions.state').get_selected_entry()
+        require('harpoon.term').clear_all()
         vim.cmd('silent cd ' .. selection[1])
+        require('prmaloney.autocmds').start_server_if_project({ startAlpha = true })
       end)
       return true
     end
