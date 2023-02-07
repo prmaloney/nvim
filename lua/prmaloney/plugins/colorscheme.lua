@@ -1,23 +1,26 @@
+local function setColorscheme() 
+  vim.cmd.colorscheme('rose-pine')
+end
+  
 return {
-  'rose-pine/neovim',
+  -- rose pine
+  {
+    'rose-pine/neovim',
+    config = function()
+      require('rose-pine').setup({
+        disable_background = true
+      })
+      setColorscheme()
+    end
+  },
+  {
+  'catppuccin/nvim',
   config = function()
-    require('rose-pine').setup({
-      disable_background = true
+    require('catppuccin').setup({
+      flavour = "mocha",
+      transparent_background = true
     })
+    setColorscheme()
   end
+  }
 }
---vim.opt.background = "dark"
---vim.g.prmaloney_colorscheme = "catppuccin"
---print('setting colorscheme')
-
--- require("tokyonight").setup({
---   style = "night",
---   transparent = true,
--- })
-
-
---require('catppuccin').setup({
---  flavour = "mocha",
---  transparent_background = true
---})
-

@@ -1,6 +1,6 @@
 require('prmaloney.settings')
-require('prmaloney.remaps')
 require('prmaloney.lazy')
+require('prmaloney.remaps')
 require('prmaloney.autocmds')
 require('prmaloney.usercmds')
-require('prmaloney.snipe')
+-- require('prmaloney.snipe')

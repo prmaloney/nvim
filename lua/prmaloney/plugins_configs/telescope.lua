@@ -1,7 +1,3 @@
-return {
-  'nvim-telescope/telescope.nvim',
-  dependencies = { { 'nvim-lua/plenary.nvim' } },
-  config = function()
 local nnoremap = require('prmaloney.keymap').nnoremap
 
 require('telescope').setup {
@@ -79,5 +75,3 @@ nnoremap('<leader>no', function()
     end
   }):find()
 end)
-  end
-}

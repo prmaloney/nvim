@@ -1,6 +1,4 @@
 return {
-  { 'rose-pine/neovim', name = 'rose-pine' },
-  { 'catppuccin/nvim', name = 'catppuccin' },
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = {
@@ -32,7 +30,6 @@ return {
   'nvim-treesitter/nvim-treesitter',
   'windwp/nvim-ts-autotag',
   'windwp/nvim-autopairs',
-  'ThePrimeagen/harpoon',
   'ThePrimeagen/git-worktree.nvim',
   'ggandor/leap.nvim',
   'numToStr/Comment.nvim',
