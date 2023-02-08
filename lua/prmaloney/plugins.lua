@@ -118,5 +118,26 @@ require('lazy').setup {
       require('nvim-tree').setup()
       require('prmaloney.keymap').nnoremap('<leader>a', '<Cmd>NvimTreeFindFileToggle<CR>')
     end
-  }
+  },
+  {
+    'goolord/alpha-nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' }
+  },
+  {
+    'ThePrimeagen/harpoon',
+    config = function()
+      local nnoremap = require('prmaloney.keymap').nnoremap
+
+      nnoremap('<leader>hp', function() require('harpoon.ui').toggle_quick_menu() end)
+      nnoremap('<c-m>', function() require('harpoon.mark').add_file() end)
+
+      nnoremap('<leader>j', function() require('harpoon.ui').nav_file(1) end)
+      nnoremap('<leader>k', function() require('harpoon.ui').nav_file(2) end)
+      nnoremap('<leader>l', function() require('harpoon.ui').nav_file(3) end)
+      nnoremap('<leader>;', function() require('harpoon.ui').nav_file(4) end)
+
+      nnoremap('<leader>J', function() require('harpoon.term').gotoTerminal(1) end)
+      nnoremap('<leader>K', function() require('harpoon.term').gotoTerminal(2) end)
+    end
+  },
 }
