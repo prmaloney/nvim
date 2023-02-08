@@ -13,6 +13,47 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
   'folke/tokyonight.nvim',
+  {
+    'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          section_separators = { left = '', right = '' },
+          component_separators = { left = '', right = '' },
+          disabled_filetypes = {}
+        },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = { 'branch' },
+          lualine_c = { {
+            'filename',
+            file_status = true, -- displays file status (readonly status, modified status)
+            path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+          } },
+          lualine_x = {
+            { 'diagnostics', sources = { "nvim_diagnostic" }, symbols = { error = ' ', warn = ' ', info = ' ',
+              hint = ' ' } },
+          },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' }
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { {
+            'filename',
+            file_status = true, -- displays file status (readonly status, modified status)
+            path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+          } },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = {}
+        },
+        tabline = {},
+      }
+    end
+  },
   'tpope/vim-surround',
   {
     'ggandor/leap.nvim',
@@ -140,4 +181,41 @@ require('lazy').setup {
       nnoremap('<leader>K', function() require('harpoon.term').gotoTerminal(2) end)
     end
   },
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require("toggleterm").setup {
+        open_mapping = [[<c-\>]],
+        direction = "vertical",
+        size = 60,
+        on_open = function()
+          require('prmaloney.keymap').tnoremap('<esc>', '<c-\\><c-n>')
+        end
+      }
+
+      local nnoremap = require('prmaloney.keymap').nnoremap
+      local Terminal = require('toggleterm.terminal').Terminal
+
+      local lazygit = Terminal:new({
+        cmd = "lazygit",
+        dir = "git_dir",
+        direction = "float",
+        float_opts = {
+          border = "double",
+        },
+        -- function to run on opening the terminal
+        on_open = function(term)
+          vim.cmd("startinsert!")
+          vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+          vim.api.nvim_buf_set_keymap(term.bufnr, "i", "<esc>", "<esc>", { noremap = true, silent = true })
+        end,
+        -- function to run on closing the terminal
+        on_close = function()
+          vim.cmd("startinsert!")
+        end,
+      })
+
+      nnoremap("<leader>gg", function() lazygit:toggle() end)
+    end
+  }
 }
