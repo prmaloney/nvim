@@ -168,6 +168,7 @@ require('lazy').setup {
     end
   },
   'nvim-treesitter/nvim-treesitter',
+  'nvim-treesitter/playground',
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = {
@@ -235,6 +236,21 @@ require('lazy').setup {
       })
 
       nnoremap("<leader>gg", function() lazygit:toggle() end)
+    end
+  },
+  {
+    'windwp/nvim-autopairs',
+    config = function() require('nvim-autopairs').setup() end,
+  },
+  {
+    'windwp/nvim-ts-autotag',
+    config = function() require('nvim-ts-autotag').setup() end,
+  },
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function() require('indent_blankline').setup {
+        show_current_context = true
+      }
     end
   }
 }
