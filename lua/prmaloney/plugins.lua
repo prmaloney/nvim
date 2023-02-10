@@ -12,7 +12,20 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
-  'folke/tokyonight.nvim',
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("rose-pine").setup(
+        {
+          disable_background = true
+        }
+      )
+      vim.cmd('colorscheme rose-pine')
+    end
+  },
   {
     'nvim-lualine/lualine.nvim',
     config = function()
@@ -93,6 +106,11 @@ require('lazy').setup {
           }
         }
       }
+      local nnoremap = require('prmaloney.keymap').nnoremap
+      nnoremap('<leader>f', require('telescope.builtin').find_files)
+      nnoremap('<leader>F', require('telescope.builtin').live_grep)
+      nnoremap('<leader>br', require('telescope.builtin').git_branches)
+      nnoremap('<leader>bf', require('telescope.builtin').buffers)
     end
   },
   {
@@ -125,7 +143,7 @@ require('lazy').setup {
       lsp.on_attach(function(_, bufnr)
         local nnoremap = require('prmaloney.keymap').nnoremap
 
-        nnoremap('K', '<Cmd>Lspsaga hover_doc<CR>', { buffer = bufnr })
+        nnoremap('K', vim.lsp.buf.hover, { buffer = bufnr })
         nnoremap('<C-e>', '<Cmd>Lspsaga show_cursor_diagnostics<CR>', { buffer = bufnr })
         nnoremap('gp', '<Cmd>Lspsaga peek_definition<CR>', { buffer = bufnr })
         nnoremap('gt', vim.lsp.buf.type_definition, { buffer = bufnr })
@@ -179,6 +197,7 @@ require('lazy').setup {
 
       nnoremap('<leader>J', function() require('harpoon.term').gotoTerminal(1) end)
       nnoremap('<leader>K', function() require('harpoon.term').gotoTerminal(2) end)
+      nnoremap('<leader>cm', function() require('harpoon.cmd-ui').toggle_quick_menu() end)
     end
   },
   {

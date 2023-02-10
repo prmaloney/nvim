@@ -28,28 +28,9 @@ dashboard.section.header.val = {
   "                                █ █ ",
   "                                ▀▄▀ ",
 }
--- dashboard.section.header.val = {
---   "░░░░░░░▄▄▀▀▀▀▀▀▀▀▄▄▄░░░░░░░░░",
---   "░░░░▄▀▀░░░░░░░░░░░░░▀▄░░░░░░░",
---   "░░▄▀░░░░░░░░░░░░░░░░░░▀▀▄░░░░",
---   "░░█░░░░░░░░░░░░░░░░░░░░░▀▄░░░",
---   "░█░░░░░░░░░░░░░░░░░░░░░░░▀▄░░",
---   "▄▀░░░░░░░░░░░░░░░░░░░░░░░░█░░",
---   "█░░░░░░░░░░░░░░░░░░░░░░░░░░█░",
---   "█░░░░░░░░░░░░░░░░░░░░░░░░░░█░",
---   "▀▄░░░░░░░░░░░██░░░░░░░░██░░█░",
---   "░█░░░░░░░░░░░░░░░░░░█░░░░░░█░",
---   "░░█░░░▄▀░░░░░░░░░░░░░█░░░░░░█",
---   "░░░█░░▀▄░░░░░░░░░░░░░▀▄░░░░█░",
---   "░░░░█░░█░░░░░░░░▄▄▄▄▄▄█░░░▄▀░",
---   "░░░░█░░▄▀▄░░░░░░░░░░░░░░░▄▀░░",
---   "░░░█░░░█░░▀▄░░░▀▀▀▀▀▀▀▀░▄▀░░░",
---   "░░░█░░░░░░░░▀▄░░░░░░░░░▄▀░░░░",
---   "░░█░░░▄▄░░░░░░▀▀▄▄▄▄▄▀▀░░░░░░",
--- }
 dashboard.section.header.opts.position = 'center'
 dashboard.section.buttons.val = {
-  dashboard.button("tff", "  Find file",
+  dashboard.button("tff", "  Find file",
     [[<Cmd>lua require('telescope.builtin').find_files({ layout_strategy = 'vertical' })<CR>]]),
   dashboard.button("tfg", "  Live grep",
     "<CMD>lua require('telescope.builtin').live_grep({ layout_strategy = 'vertical', preview = true })<CR>"),
