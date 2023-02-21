@@ -152,6 +152,14 @@ require('lazy').setup {
         nnoremap('<leader>ca', '<Cmd>Lspsaga code_action<CR>', { buffer = bufnr })
         nnoremap('<leader>e', '<Cmd>Lspsaga diagnostic_jump_next<CR>', { buffer = bufnr })
         nnoremap('<leader>E', '<Cmd>Lspsaga diagnostic_jump_prev<CR>', { buffer = bufnr })
+
+
+        vim.api.nvim_create_autocmd({ 'BufWritePre', 'InsertLeave' }, {
+          callback = function()
+            vim.cmd('LspZeroFormat')
+          end,
+          buffer = bufnr,
+        })
       end)
 
       -- (Optional) Configure lua language server for neovim
@@ -160,14 +168,18 @@ require('lazy').setup {
       lsp.setup()
       require('lspsaga').setup {}
 
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        callback = function()
-          vim.cmd('LspZeroFormat')
-        end
-      })
     end
   },
-  'nvim-treesitter/nvim-treesitter',
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        highlight = { enable = true },
+        indent = { enable = true }
+      }
+    end
+  },
   'nvim-treesitter/playground',
   {
     'nvim-tree/nvim-tree.lua',
@@ -199,6 +211,7 @@ require('lazy').setup {
       nnoremap('<leader>J', function() require('harpoon.term').gotoTerminal(1) end)
       nnoremap('<leader>K', function() require('harpoon.term').gotoTerminal(2) end)
       nnoremap('<leader>cm', function() require('harpoon.cmd-ui').toggle_quick_menu() end)
+      nnoremap('<leader>c1', function() require('harpoon.term').sendCommand(1, 1) end)
     end
   },
   {
