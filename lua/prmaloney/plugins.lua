@@ -75,13 +75,18 @@ require('lazy').setup {
     end
   },
   {
+    'jinh0/eyeliner.nvim',
+    opts = { highlight_on_key = true },
+  },
+  {
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {
-      { '<leader>f', '<cmd>Telescope find_files<cr>' },
-      { '<leader>F', '<cmd>Telescope live_grep<cr>' },
+      { '<leader>f',  '<cmd>Telescope find_files<cr>' },
+      { '<leader>F',  '<cmd>Telescope live_grep<cr>' },
       { '<leader>br', '<cmd>Telescope git_branches<cr>' },
       { '<leader>bf', '<cmd>Telescope buffers<cr>' },
+      { '<leader>bl', '<cmd>Telescope current_buffer_fuzzy_find<cr>' },
     },
     config = function()
       require('telescope').setup {
@@ -106,11 +111,6 @@ require('lazy').setup {
           }
         }
       }
-      local nnoremap = require('prmaloney.keymap').nnoremap
-      nnoremap('<leader>f', require('telescope.builtin').find_files)
-      nnoremap('<leader>F', require('telescope.builtin').live_grep)
-      nnoremap('<leader>br', require('telescope.builtin').git_branches)
-      nnoremap('<leader>bf', require('telescope.builtin').buffers)
     end
   },
   {
@@ -153,8 +153,51 @@ require('lazy').setup {
         nnoremap('<leader>e', '<Cmd>Lspsaga diagnostic_jump_next<CR>', { buffer = bufnr })
         nnoremap('<leader>E', '<Cmd>Lspsaga diagnostic_jump_prev<CR>', { buffer = bufnr })
 
+        local cmp = require('cmp')
+        local luasnip = require('luasnip')
 
-        vim.api.nvim_create_autocmd({ 'BufWritePre', 'InsertLeave' }, {
+        local has_words_before = function()
+          unpack = unpack or table.unpack
+          local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+          return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        end
+
+        cmp.setup({
+          mapping = {
+
+            -- ... Your other mappings ...
+
+            ["<Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_next_item()
+                -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+                -- they way you will only jump inside the snippet region
+              elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+              elseif has_words_before() then
+                cmp.complete()
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_prev_item()
+              elseif luasnip.jumpable( -1) then
+                luasnip.jump( -1)
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+
+            -- ... Your other mappings ...
+          },
+        })
+
+        vim.keymap.set('v', '<c-f>', function() vim.lsp.buf.format() end, { noremap = true, buffer = 0 })
+
+        vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
           callback = function()
             vim.cmd('LspZeroFormat')
           end,
@@ -167,7 +210,6 @@ require('lazy').setup {
 
       lsp.setup()
       require('lspsaga').setup {}
-
     end
   },
   {
@@ -188,8 +230,24 @@ require('lazy').setup {
     },
     config = function()
       require('nvim-tree').setup()
+
+      vim.o.confirm = true
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = vim.api.nvim_create_augroup("NvimTreeClose", { clear = true }),
+        callback = function()
+          local layout = vim.api.nvim_call_function("winlayout", {})
+          if layout[1] == "leaf" and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree" and layout[3] == nil then
+            vim.cmd("quit")
+          end
+        end
+      })
+
       require('prmaloney.keymap').nnoremap('<leader>a', '<Cmd>NvimTreeFindFileToggle<CR>')
     end
+  },
+  {
+    'numToStr/Comment.nvim',
+    config = function() require('Comment').setup() end,
   },
   {
     'goolord/alpha-nvim',
@@ -261,7 +319,8 @@ require('lazy').setup {
   },
   {
     'lukas-reineke/indent-blankline.nvim',
-    config = function() require('indent_blankline').setup {
+    config = function()
+      require('indent_blankline').setup {
         show_current_context = true
       }
     end
