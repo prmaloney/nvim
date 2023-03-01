@@ -1,6 +1,6 @@
 require('lspsaga').setup {
   ui = {
-    border = 'single',
+    border = 'none',
   }
 }
 local nnoremap = require('prmaloney.keymap').nnoremap

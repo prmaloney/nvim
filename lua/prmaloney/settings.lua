@@ -17,7 +17,7 @@ vim.opt.wrap = false
 vim.opt.clipboard = 'unnamed'
 vim.opt.swapfile = false
 vim.opt.colorcolumn = '80'
+vim.g.mapleader = ' '
 
-vim.g.mapleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
