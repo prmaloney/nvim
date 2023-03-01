@@ -82,7 +82,7 @@ require('lazy').setup {
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {
-      { '<leader>f',  '<cmd>Telescope find_files<cr>' },
+      { '<leader>f',  '<cmd>Telescope find_files hidden=true<cr>' },
       { '<leader>F',  '<cmd>Telescope live_grep<cr>' },
       { '<leader>br', '<cmd>Telescope git_branches<cr>' },
       { '<leader>bf', '<cmd>Telescope buffers<cr>' },
@@ -213,6 +213,18 @@ require('lazy').setup {
     end
   },
   {
+    'jose-elias-alvarez/null-ls.nvim',
+    config = function()
+      local null_ls = require('null-ls')
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.prettier,
+          null_ls.builtins.diagnostics.eslint,
+        }
+      })
+    end
+  },
+  {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     config = function()
@@ -223,28 +235,13 @@ require('lazy').setup {
     end
   },
   'nvim-treesitter/playground',
-  {
-    'nvim-tree/nvim-tree.lua',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons'
-    },
+  { 'nvim-neo-tree/neo-tree.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim' },
     config = function()
-      require('nvim-tree').setup()
-
-      vim.o.confirm = true
-      vim.api.nvim_create_autocmd("BufEnter", {
-        group = vim.api.nvim_create_augroup("NvimTreeClose", { clear = true }),
-        callback = function()
-          local layout = vim.api.nvim_call_function("winlayout", {})
-          if layout[1] == "leaf" and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree" and layout[3] == nil then
-            vim.cmd("quit")
-          end
-        end
-      })
-
-      require('prmaloney.keymap').nnoremap('<leader>a', '<Cmd>NvimTreeFindFileToggle<CR>')
-    end
-  },
+      require('prmaloney.keymap').nnoremap('<leader>a', function()
+        vim.cmd('Neotree toggle reveal')
+      end)
+    end },
   {
     'numToStr/Comment.nvim',
     config = function() require('Comment').setup() end,
