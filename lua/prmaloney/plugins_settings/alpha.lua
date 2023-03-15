@@ -53,7 +53,7 @@ alpha.setup(dashboard.opts)
 
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
-    if (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(1))) then
+    if (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.v.argv[2]) ~= 0) then
       if vim.fn.exists('Neotree') then
         vim.cmd('Neotree show')
       end

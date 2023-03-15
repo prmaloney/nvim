@@ -14,9 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   {
     'rose-pine/neovim',
-    name = 'rose-pine',
-    lazy = false,
-    priority = 1000,
     config = function()
       require("rose-pine").setup(
         {
@@ -87,6 +84,7 @@ require('lazy').setup {
       { '<leader>br', '<cmd>Telescope git_branches<cr>' },
       { '<leader>bf', '<cmd>Telescope buffers<cr>' },
       { '<leader>bl', '<cmd>Telescope current_buffer_fuzzy_find<cr>' },
+      { '<leader>ht', '<cmd>Telescope help_tags<cr>' },
     },
     config = function()
       require('telescope').setup {
@@ -132,41 +130,25 @@ require('lazy').setup {
     },
     config = function()
       local lsp = require('lsp-zero')
-      lsp.preset('recommended')
-
-      -- See :help lsp-zero-preferences
-      lsp.set_preferences({
-        set_lsp_keymaps = { omit = { '<F4', 'gr', 'K', } }, -- set to false if you want to configure your own keybindings
-        manage_nvim_cmp = true, -- set to false if you want to configure nvim-cmp on your own
+      lsp.preset({
+        name = 'minimal',
+        set_lsp_keymaps = true,
+        manage_nvim_cmp = true,
+        suggest_lsp_servers = true,
       })
 
-      lsp.on_attach(function(_, bufnr)
-        local nnoremap = require('prmaloney.keymap').nnoremap
-
-        nnoremap('K', vim.lsp.buf.hover, { buffer = bufnr })
-        nnoremap('<C-e>', '<Cmd>Lspsaga show_cursor_diagnostics<CR>', { buffer = bufnr })
-        nnoremap('gp', '<Cmd>Lspsaga peek_definition<CR>', { buffer = bufnr })
-        nnoremap('gt', vim.lsp.buf.type_definition, { buffer = bufnr })
-        nnoremap('gr', '<Cmd>Lspsaga lsp_finder<CR>', { buffer = bufnr })
-        nnoremap('<leader>rr', '<Cmd>Lspsaga rename<CR>', { buffer = bufnr })
-        nnoremap('<leader>ca', '<Cmd>Lspsaga code_action<CR>', { buffer = bufnr })
-        nnoremap('<leader>e', '<Cmd>Lspsaga diagnostic_jump_next<CR>', { buffer = bufnr })
-        nnoremap('<leader>E', '<Cmd>Lspsaga diagnostic_jump_prev<CR>', { buffer = bufnr })
-
-        local cmp = require('cmp')
-        local luasnip = require('luasnip')
-
+      lsp.on_attach(function()
         local has_words_before = function()
           unpack = unpack or table.unpack
           local line, col = unpack(vim.api.nvim_win_get_cursor(0))
           return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
         end
 
+        local luasnip = require("luasnip")
+        local cmp = require("cmp")
+
         cmp.setup({
           mapping = {
-
-            -- ... Your other mappings ...
-
             ["<Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_next_item()
@@ -190,27 +172,14 @@ require('lazy').setup {
                 fallback()
               end
             end, { "i", "s" }),
-
-            -- ... Your other mappings ...
           },
-        })
-
-        vim.keymap.set('v', '<c-f>', function() vim.lsp.buf.format() end, { noremap = true, buffer = 0 })
-
-        vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
-          callback = function()
-            vim.cmd('LspZeroFormat')
-          end,
-          buffer = bufnr,
         })
       end)
 
-      -- (Optional) Configure lua language server for neovim
-      lsp.nvim_workspace() -- lsp.nvim_workspace()
+      lsp.nvim_workspace()
 
       lsp.setup()
-      require('lspsaga').setup {}
-    end
+    end,
   },
   {
     'jose-elias-alvarez/null-ls.nvim',
@@ -238,10 +207,25 @@ require('lazy').setup {
   { 'nvim-neo-tree/neo-tree.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     config = function()
+      require('neo-tree').setup({
+        close_if_last_window = true,
+        filesystem = {
+          filtered_items = {
+            visible = true, -- This is what you want: If you set this to `true`, all "hide" just mean "dimmed out"
+            hide_dotfiles = false,
+            hide_gitignored = true,
+          },
+        }
+      })
       require('prmaloney.keymap').nnoremap('<leader>a', function()
         vim.cmd('Neotree toggle reveal')
       end)
-    end },
+    end,
+  },
+  {
+    's1n7ax/nvim-window-picker',
+    config = true,
+  },
   {
     'numToStr/Comment.nvim',
     config = function() require('Comment').setup() end,
@@ -274,8 +258,7 @@ require('lazy').setup {
     config = function()
       require("toggleterm").setup {
         open_mapping = [[<c-\>]],
-        direction = "vertical",
-        size = 60,
+        shade_terminals = false,
         on_open = function()
           require('prmaloney.keymap').tnoremap('<esc>', '<c-\\><c-n>')
         end
@@ -313,6 +296,15 @@ require('lazy').setup {
   {
     'windwp/nvim-ts-autotag',
     config = function() require('nvim-ts-autotag').setup() end,
+  },
+  {
+    'toppair/peek.nvim',
+    build = 'deno task --quiet build:fast',
+    config = function()
+      require('peek').setup({
+        app = 'browser',
+      });
+    end
   },
   {
     'lukas-reineke/indent-blankline.nvim',
