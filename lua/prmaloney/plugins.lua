@@ -11,16 +11,37 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local colorscheme = 'kanagawa'
+
 require('lazy').setup {
+  {
+    'prmaloney/valet.nvim',
+    config = function()
+      -- vim.opt.rtp:prepend('~/personal/valet.nvim/')
+
+      require('valet').setup({
+        after_all = function()
+          if vim.fn.argc() == 0 then
+            vim.cmd('Alpha')
+          end
+        end
+      })
+    end,
+  },
+  {
+    'rebelot/kanagawa.nvim',
+    config = function()
+      require("kanagawa").setup({
+        transparent = true,
+      })
+    end
+  },
   {
     'rose-pine/neovim',
     config = function()
-      require("rose-pine").setup(
-        {
-          disable_background = true
-        }
-      )
-      vim.cmd('colorscheme rose-pine')
+      require("rose-pine").setup({
+        disable_background = true
+      })
     end
   },
   {
@@ -39,11 +60,19 @@ require('lazy').setup {
           lualine_c = { {
             'filename',
             file_status = true, -- displays file status (readonly status, modified status)
-            path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+            path = 1            -- 0 = just filename, 1 = relative path, 2 = absolute path
           } },
           lualine_x = {
-            { 'diagnostics', sources = { "nvim_diagnostic" }, symbols = { error = ' ', warn = ' ', info = ' ',
-              hint = ' ' } },
+            {
+              'diagnostics',
+              sources = { "nvim_diagnostic" },
+              symbols = {
+                error = ' ',
+                warn = ' ',
+                info = ' ',
+                hint = ' '
+              }
+            },
           },
           lualine_y = { 'progress' },
           lualine_z = { 'location' }
@@ -54,7 +83,7 @@ require('lazy').setup {
           lualine_c = { {
             'filename',
             file_status = true, -- displays file status (readonly status, modified status)
-            path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+            path = 1            -- 0 = just filename, 1 = relative path, 2 = absolute path
           } },
           lualine_x = { 'location' },
           lualine_y = {},
@@ -77,22 +106,18 @@ require('lazy').setup {
   },
   {
     'nvim-telescope/telescope.nvim',
+    lazy = false,
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {
-      { '<leader>f',  '<cmd>Telescope find_files hidden=true<cr>' },
+      { '<leader>f',  '<cmd>Telescope find_files<cr>' },
       { '<leader>F',  '<cmd>Telescope live_grep<cr>' },
       { '<leader>br', '<cmd>Telescope git_branches<cr>' },
-      { '<leader>bf', '<cmd>Telescope buffers<cr>' },
-      { '<leader>bl', '<cmd>Telescope current_buffer_fuzzy_find<cr>' },
+      { '<leader>bf', '<cmd>Telescope document_<cr>' },
       { '<leader>ht', '<cmd>Telescope help_tags<cr>' },
     },
     config = function()
       require('telescope').setup {
         defaults = {
-          layout_strategy = 'cursor',
-          layout_config = {
-            cursor = { width = 0.75, height = 0.5, preview_width = 0.4 }
-          },
           mappings = {
             i = {
               ["<esc>"] = require('telescope.actions').close,
@@ -127,59 +152,40 @@ require('lazy').setup {
       'rafamadriz/friendly-snippets',
       'nvim-tree/nvim-web-devicons',
       'glepnir/lspsaga.nvim',
+      'folke/neodev.nvim'
     },
     config = function()
       local lsp = require('lsp-zero')
       lsp.preset({
-        name = 'minimal',
-        set_lsp_keymaps = true,
-        manage_nvim_cmp = true,
-        suggest_lsp_servers = true,
+        name = 'recommended',
+        set_lsp_keymaps = { omit = { 'gr', 'gd', 'K' } } -- I want something else for these ones
       })
 
+      require('lspsaga').setup()
+
       lsp.on_attach(function()
-        local has_words_before = function()
-          unpack = unpack or table.unpack
-          local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-          return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        local nnoremap = require('prmaloney.keymap').nnoremap
+
+        -- lspsaga mappings
+        nnoremap('gr', '<Cmd>Lspsaga lsp_finder<cr>')
+        nnoremap('K', '<Cmd>Lspsaga hover_doc<cr>')
+
+        nnoremap('gd', '<Cmd>Telescope lsp_definitions<cr>')
+
+        if vim.bo.filetype == 'markdown' then
+          nnoremap('<leader>pp', function() require('peek').open() end)
         end
-
-        local luasnip = require("luasnip")
-        local cmp = require("cmp")
-
-        cmp.setup({
-          mapping = {
-            ["<Tab>"] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_next_item()
-                -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-                -- they way you will only jump inside the snippet region
-              elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
-              elseif has_words_before() then
-                cmp.complete()
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-
-            ["<S-Tab>"] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_prev_item()
-              elseif luasnip.jumpable( -1) then
-                luasnip.jump( -1)
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-          },
-        })
       end)
 
-      lsp.nvim_workspace()
+      require("neodev").setup({
+        override = function(_, library)
+          library.enabled = true
+          library.plugins = true
+        end,
+      })
 
       lsp.setup()
-    end,
+    end
   },
   {
     'jose-elias-alvarez/null-ls.nvim',
@@ -191,6 +197,7 @@ require('lazy').setup {
           null_ls.builtins.diagnostics.eslint,
         }
       })
+      vim.api.nvim_create_autocmd('BufWritePre', { callback = function() vim.lsp.buf.format() end })
     end
   },
   {
@@ -204,7 +211,8 @@ require('lazy').setup {
     end
   },
   'nvim-treesitter/playground',
-  { 'nvim-neo-tree/neo-tree.nvim',
+  {
+    'nvim-neo-tree/neo-tree.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     config = function()
       require('neo-tree').setup({
@@ -228,7 +236,7 @@ require('lazy').setup {
   },
   {
     'numToStr/Comment.nvim',
-    config = function() require('Comment').setup() end,
+    config = true,
   },
   {
     'goolord/alpha-nvim',
@@ -291,11 +299,11 @@ require('lazy').setup {
   },
   {
     'windwp/nvim-autopairs',
-    config = function() require('nvim-autopairs').setup() end,
+    config = true,
   },
   {
     'windwp/nvim-ts-autotag',
-    config = function() require('nvim-ts-autotag').setup() end,
+    config = true,
   },
   {
     'toppair/peek.nvim',
@@ -315,3 +323,5 @@ require('lazy').setup {
     end
   }
 }
+
+vim.cmd('colorscheme ' .. colorscheme)

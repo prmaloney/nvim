@@ -4,6 +4,7 @@ vim.opt.relativenumber = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
+vim.opt.smartindent = true
 vim.opt.textwidth = 80
 vim.opt.scrolloff = 15
 vim.opt.expandtab = true
