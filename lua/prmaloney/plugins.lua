@@ -15,20 +15,20 @@ vim.opt.rtp:prepend(lazypath)
 local colorscheme = 'kanagawa'
 
 require('lazy').setup({
-    -- {
-    --   'prmaloney/valet.nvim',
-    --   dev = true,
-    --   config = function()
-    --     require('valet').setup({
-    --       delete_finished = true,
-    --       after_all = function()
-    --         if vim.fn.argc() == 0 then
-    --           vim.cmd('Alpha')
-    --         end
-    --       end
-    --     })
-    --   end,
-    -- },
+    {
+      'prmaloney/valet.nvim',
+      dev = true,
+      config = function()
+        require('valet').setup({
+          delete_finished = true,
+          after_all = function()
+            if vim.fn.argc() == 0 then
+              vim.cmd('Alpha')
+            end
+          end
+        })
+      end,
+    },
     {
       'prmaloney/inline-fold.nvim',
       dev = true,
@@ -100,10 +100,52 @@ require('lazy').setup({
     },
     'tpope/vim-surround',
     {
-      'ggandor/leap.nvim',
-      config = function()
-        require('leap').add_default_mappings()
-      end
+      'folke/flash.nvim',
+      event = 'VeryLazy',
+      ---@type Flash.Config
+      opts = {},
+      keys = {
+        {
+          "s",
+          mode = { "n", "x", "o" },
+          function()
+            require("flash").jump()
+          end,
+          desc = "Flash",
+        },
+        {
+          "S",
+          mode = { "n", "o", "x" },
+          function()
+            require("flash").treesitter()
+          end,
+          desc = "Flash Treesitter",
+        },
+        {
+          "r",
+          mode = "o",
+          function()
+            require("flash").remote()
+          end,
+          desc = "Remote Flash",
+        },
+        {
+          "R",
+          mode = { "o", "x" },
+          function()
+            require("flash").treesitter_search()
+          end,
+          desc = "Flash Treesitter Search",
+        },
+        {
+          "<c-s>",
+          mode = { "c" },
+          function()
+            require("flash").toggle()
+          end,
+          desc = "Toggle Flash Search",
+        },
+      },
     },
     {
       'jinh0/eyeliner.nvim',
@@ -119,6 +161,8 @@ require('lazy').setup({
         { '<leader>br', '<cmd>Telescope git_branches<cr>' },
         { '<leader>bf', '<cmd>Telescope buffers<cr>' },
         { '<leader>ht', '<cmd>Telescope help_tags<cr>' },
+        { '<leader>tr', '<cmd>Telescope lsp_references<cr>' },
+        { '<leader>td', '<cmd>Telescope lsp_definitions<cr>' },
       },
       config = function()
         require('telescope').setup {
@@ -225,8 +269,8 @@ require('lazy').setup({
               local is_class = false
               if node:parent() and node:parent():parent() and node:type() == 'attribute_value' then
                 for sibling, _ in node:parent():parent():iter_children() do
-                  if vim.treesitter.query.get_node_text(sibling, 0) == 'class' then
-                    print('found a class')
+                  if vim.treesitter.get_node_text(sibling, 0) == 'class'
+                      or vim.treesitter.get_node_text(sibling, 0) == 'className' then
                     is_class = true
                   end
                 end
@@ -253,6 +297,7 @@ require('lazy').setup({
 
             fold_all_classes()
             vim.api.nvim_create_user_command('TFToggle', fold_all_classes, {})
+            vim.api.nvim_create_autocmd('InsertLeave', { callback = fold_all_classes })
           end
         })
 
@@ -419,7 +464,7 @@ require('lazy').setup({
           show_current_context = true
         }
       end
-    }
+    },
   },
   {
     dev = {
