@@ -1,12 +1,26 @@
+local function codeiumStatus()
+    return "󰘦 :" .. vim.fn['codeium#GetStatusString']()
+end
+
 return {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
     opts = {
         options = {
-            theme = 'onedark',
             component_separators = '|',
             section_separators = '',
         },
+        sections = {
+            lualine_c = {
+                'filename',
+                {
+                    codeiumStatus,
+                    color = function()
+                            return 'lualine_b_insert'
+                    end
+                },
+            }
+        }
     },
 }

@@ -45,12 +45,7 @@ return {
             nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
             nmap('<leader>k', vim.lsp.buf.signature_help, 'Signature Documentation')
 
-            -- Create a command `:Format` local to the LSP buffer
-            vim.api.nvim_create_autocmd('BufWritePre', {
-                callback = function()
-                    vim.lsp.buf.format()
-                end
-            })
+            vim.keymap.set('n', '<leader>ff',vim.lsp.buf.format)
 
             vim.keymap.set({ 'v', 'n' }, '=', function()
                 vim.lsp.buf.format()
@@ -58,6 +53,9 @@ return {
         end
 
         local servers = {
+            svelte = {
+                filetypes = { 'svelte', 'svx' }
+            },
             lua_ls = {
                 Lua = {
                     workspace = { checkThirdParty = false },
