@@ -13,11 +13,11 @@ return {
         },
         sections = {
             lualine_c = {
-                'filename',
+                { 'filename', path = 1 },
                 {
                     codeiumStatus,
                     color = function()
-                            return 'lualine_b_insert'
+                        return 'lualine_b_insert'
                     end
                 },
             }

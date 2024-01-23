@@ -4,14 +4,16 @@
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
--- I do this
-vim.keymap.set('i', 'jj', '<Esc>')
-
 -- window stuff
 vim.keymap.set('n', '<leader>v', '<C-w>v')
 vim.keymap.set('n', '<leader>s', '<C-w>s')
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+
+vim.keymap.set('n', '∆', '<C-w>j')
+vim.keymap.set('n', '˚', '<C-w>k')
+vim.keymap.set('n', '˙', '<C-w>h')
+vim.keymap.set('n', '¬', '<C-w>l')
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })

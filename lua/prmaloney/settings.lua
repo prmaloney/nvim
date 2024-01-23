@@ -8,6 +8,9 @@ vim.o.hlsearch = false
 -- Scrolloff
 vim.o.scrolloff = 8
 
+-- Max columns
+vim.o.colorcolumn = "80"
+
 -- no wrap
 vim.o.wrap = false
 

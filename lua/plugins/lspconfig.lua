@@ -35,6 +35,7 @@ return {
             nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
             nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+            nmap('gt', vim.lsp.buf.type_definition, '[G]oto [T]ype definition')
             nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
             nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
             nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
@@ -45,7 +46,7 @@ return {
             nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
             nmap('<leader>k', vim.lsp.buf.signature_help, 'Signature Documentation')
 
-            vim.keymap.set('n', '<leader>ff',vim.lsp.buf.format)
+            vim.keymap.set('n', '<leader>ff', vim.lsp.buf.format)
 
             vim.keymap.set({ 'v', 'n' }, '=', function()
                 vim.lsp.buf.format()
@@ -92,6 +93,16 @@ return {
             capabilities = capabilities,
             on_attach = on_attach,
             filetypes = { 'js', 'ts', 'jsx', 'tsx', 'mjs', 'cjs' },
+        }
+        require('lspconfig').gopls.setup {
+            capabilities = capabilities,
+            on_attach = function (client, bufnr)
+                on_attach(client, bufnr)
+                vim.keymap.set('n', '<leader>ee', function ()
+                    -- insert if err != nil {\nreturn err\n} below my cursor
+                    vim.api.nvim_put({ 'if err != nil {', '\treturn err', '}' }, 'l', false, true)
+                end)
+            end
         }
     end
 }
