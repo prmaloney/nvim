@@ -9,6 +9,7 @@ vim.keymap.set('n', '<leader>v', '<C-w>v')
 vim.keymap.set('n', '<leader>s', '<C-w>s')
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+vim.keymap.set('n', '<leader>gs', '<cmd>G<cr>')
 
 vim.keymap.set('n', '∆', '<C-w>j')
 vim.keymap.set('n', '˚', '<C-w>k')
