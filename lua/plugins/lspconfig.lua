@@ -5,6 +5,7 @@ return {
         -- Automatically install LSPs to stdpath for neovim
         { 'williamboman/mason.nvim', config = true },
         'williamboman/mason-lspconfig.nvim',
+        'nvimtools/none-ls.nvim',
 
         -- Useful status updates for LSP
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -22,13 +23,17 @@ return {
         --
         -- [[ Configure LSP ]]
         --  This function gets run when an LSP connects to a particular buffer.
-        local on_attach = function(_, bufnr)
+        local on_attach = function(client, bufnr)
             local nmap = function(keys, func, desc)
                 if desc then
                     desc = 'LSP: ' .. desc
                 end
 
                 vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+            end
+
+            if client.server_capabilities.inlayHintProvider then
+                vim.lsp.inlay_hint.enable(true)
             end
 
             nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -91,18 +96,44 @@ return {
         }
         require('lspconfig').tsserver.setup {
             capabilities = capabilities,
+            init_options = {
+                preferences = {
+                    includeInlayParameterNameHints = "all",
+                    includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                    includeInlayFunctionParameterTypeHints = true,
+                    includeInlayVariableTypeHints = true,
+                    includeInlayPropertyDeclarationTypeHints = true,
+                    includeInlayFunctionLikeReturnTypeHints = true,
+                    includeInlayEnumMemberValueHints = true,
+                    importModuleSpecifierPreference = 'non-relative'
+                },
+            },
             on_attach = on_attach,
             filetypes = { 'js', 'ts', 'jsx', 'tsx', 'mjs', 'cjs' },
         }
+        require('lspconfig').sourcekit.setup {
+            cmd = { '/usr/bin/sourcekit-lsp' }
+        }
         require('lspconfig').gopls.setup {
             capabilities = capabilities,
-            on_attach = function (client, bufnr)
+            on_attach = function(client, bufnr)
                 on_attach(client, bufnr)
-                vim.keymap.set('n', '<leader>ee', function ()
+                vim.keymap.set('n', '<leader>ee', function()
                     -- insert if err != nil {\nreturn err\n} below my cursor
                     vim.api.nvim_put({ 'if err != nil {', '\treturn err', '}' }, 'l', false, true)
                 end)
             end
         }
+        require('lspconfig').svelte.setup({
+            capabilities = capabilities,
+            on_attach = on_attach
+        })
+
+        local null_ls = require('null-ls')
+        null_ls.setup({
+            sources = {
+                null_ls.builtins.formatting.prettier,
+            }
+        })
     end
 }

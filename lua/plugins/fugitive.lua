@@ -7,5 +7,8 @@ return {
         -- hunk picking
         vim.keymap.set('n', 'gf', '<cmd>diffget //2<cr>')
         vim.keymap.set('n', 'gh', '<cmd>diffget //3<cr>')
+
+        vim.keymap.set('n', '[x', '?<<<<cr>')
+        vim.keymap.set('n', ']x', '/<<<<<cr>')
     end
 }

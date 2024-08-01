@@ -53,6 +53,7 @@ return {
         end, { desc = '[/] Fuzzily search in current buffer' })
 
         vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
+        vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = '[G]it [B]ranches' })
         vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
         vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Live [G]rep' })
         vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })

@@ -21,9 +21,9 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- quickfix remaps
-vim.keymap.set('n', '<leader>cn', '<cmd>:cnext<CR>zz', { desc = 'Quickfix next' })
-vim.keymap.set('n', '<leader>cp', '<cmd>:cprev<CR>zz', { desc = "Quickfix prev" })
-vim.keymap.set('n', '<leader>cq', '<cmd>:cclose<CR>zz', { desc = "Quickfix close" })
+vim.keymap.set('n', '<c-n>', '<cmd>:cnext<CR>zz', { desc = 'Quickfix next' })
+vim.keymap.set('n', '<c-p>', '<cmd>:cprev<CR>zz', { desc = "Quickfix prev" })
+vim.keymap.set('n', '<c-q>', '<cmd>:cclose<CR>zz', { desc = "Quickfix close" })
 
 -- move lines
 vim.keymap.set('v', "J", ":m '>+1<CR>gv=gv")
