@@ -20,6 +20,10 @@ return {
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
         vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+        vim.api.nvim_create_user_command('InlayEnable', function() vim.lsp.inlay_hint.enable() end, {})
+        vim.api.nvim_create_user_command('InlayDisable', function() vim.lsp.inlay_hint.enable(false) end, {})
+
         --
         -- [[ Configure LSP ]]
         --  This function gets run when an LSP connects to a particular buffer.
@@ -68,10 +72,15 @@ return {
                     telemetry = { enable = false },
                 },
             },
+            ts_ls = {
+                filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' }
+            },
         }
 
         -- Setup neovim lua configuration
         require('neodev').setup()
+
+        require('java').setup({})
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -127,6 +136,17 @@ return {
         require('lspconfig').svelte.setup({
             capabilities = capabilities,
             on_attach = on_attach
+        })
+
+        require 'lspconfig'.angularls.setup {
+            root_dir = require('lspconfig.util').root_pattern("angular.json", "package.json", "tsconfig.json", "jsconfig.json"),
+            on_attach = on_attach,
+            capabilities = capabilities,
+        }
+        vim.filetype.add({
+            pattern = {
+                [".*%.component%.html"] = "htmlangular", -- Sets the filetype to `htmlangular` if it matches the pattern
+            },
         })
 
         local null_ls = require('null-ls')
