@@ -21,8 +21,13 @@ return {
         vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
-        vim.api.nvim_create_user_command('InlayEnable', function() vim.lsp.inlay_hint.enable() end, {})
-        vim.api.nvim_create_user_command('InlayDisable', function() vim.lsp.inlay_hint.enable(false) end, {})
+        vim.api.nvim_create_user_command('InlayToggle', function()
+            if vim.lsp.inlay_hint.is_enabled() then
+                vim.lsp.inlay_hint.enable(false)
+            else
+                vim.lsp.inlay_hint.enable()
+            end
+        end, {})
 
         --
         -- [[ Configure LSP ]]
@@ -79,8 +84,6 @@ return {
 
         -- Setup neovim lua configuration
         require('neodev').setup()
-
-        require('java').setup({})
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         local capabilities = vim.lsp.protocol.make_client_capabilities()

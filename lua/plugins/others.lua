@@ -1,5 +1,6 @@
 return {
     'tpope/vim-surround',
+    { 'marcussimonsen/let-it-snow.nvim', opts = {}, cmd = 'LetItSnow' },
     'tpope/vim-abolish',
     {
         'pixelastic/vim-undodir-tree',
@@ -7,5 +8,5 @@ return {
             vim.cmd('set undofile')
         end
     },
-    { 'numToStr/Comment.nvim', opts = {} },
+    { 'numToStr/Comment.nvim',           opts = {} },
 }
