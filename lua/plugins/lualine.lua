@@ -11,7 +11,7 @@ return {
         },
         sections = {
             lualine_c = {
-                { 'filename', path = 1 },
+                { 'filename', path = 4 },
                 {
                     codeiumStatus,
                     color = function()

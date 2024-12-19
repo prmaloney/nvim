@@ -13,6 +13,7 @@ return {
 
         -- Additional lua configuration, makes nvim stuff amazing!
         'folke/neodev.nvim',
+        'saghen/blink.cmp'
     },
     config = function()
         -- Diagnostic keymaps
@@ -87,7 +88,7 @@ return {
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+        capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
         -- Ensure the servers above are installed
         local mason_lspconfig = require 'mason-lspconfig'
@@ -106,7 +107,8 @@ return {
                 }
             end
         }
-        require('lspconfig').ts_ls.setup {
+        local lspconfig = require('lspconfig')
+        lspconfig.ts_ls.setup {
             capabilities = capabilities,
             init_options = {
                 preferences = {
@@ -123,10 +125,10 @@ return {
             on_attach = on_attach,
             filetypes = { 'js', 'ts', 'jsx', 'tsx', 'mjs', 'cjs' },
         }
-        require('lspconfig').sourcekit.setup {
+        lspconfig.sourcekit.setup {
             cmd = { '/usr/bin/sourcekit-lsp' }
         }
-        require('lspconfig').gopls.setup {
+        lspconfig.gopls.setup {
             capabilities = capabilities,
             on_attach = function(client, bufnr)
                 on_attach(client, bufnr)
@@ -136,12 +138,12 @@ return {
                 end)
             end
         }
-        require('lspconfig').svelte.setup({
+        lspconfig.svelte.setup({
             capabilities = capabilities,
             on_attach = on_attach
         })
 
-        require 'lspconfig'.angularls.setup {
+        lspconfig.angularls.setup {
             root_dir = require('lspconfig.util').root_pattern("angular.json", "package.json", "tsconfig.json", "jsconfig.json"),
             on_attach = on_attach,
             capabilities = capabilities,
