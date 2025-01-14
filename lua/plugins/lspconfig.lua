@@ -108,6 +108,30 @@ return {
             end
         }
         local lspconfig = require('lspconfig')
+        require('java').setup({
+            jdk = {
+                auto_install = true,
+                version = '21.0.4-tem',
+            }
+        })
+        lspconfig.jdtls.setup({
+            on_attach = on_attach,
+            capabilities = capabilities,
+            settings = {
+                java = {
+                    home = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
+                    configuration = {
+                        runtimes = {
+                            {
+                                name = "JavaSE-21",
+                                path = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
+                                default = true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
         lspconfig.ts_ls.setup {
             capabilities = capabilities,
             init_options = {
@@ -158,6 +182,7 @@ return {
         null_ls.setup({
             sources = {
                 null_ls.builtins.formatting.prettier,
+                null_ls.builtins.formatting.google_java_format,
             }
         })
     end

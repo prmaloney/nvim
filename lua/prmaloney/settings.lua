@@ -5,8 +5,8 @@
 -- Set highlight on search
 vim.o.hlsearch = false
 
--- Scrolloff
-vim.o.scrolloff = 8
+-- Scrolloff - this sets the cursor to stay in the middle
+vim.o.scrolloff = 100
 
 
 vim.opt.termguicolors = true
