@@ -5,7 +5,6 @@ return {
         config = function()
             require('tokyonight').setup({
                 style = "storm",
-                transparent = true
             })
         end,
     },
@@ -13,7 +12,8 @@ return {
         "catppuccin/nvim",
         name = "catppuccin",
         config = function()
-            require('catppuccin').setup({ transparent_background = true })
+            require('catppuccin').setup() -- { transparent_background = true })
+            vim.cmd('colorscheme catppuccin-mocha')
         end
     },
     {
@@ -21,9 +21,7 @@ return {
         as = 'rose-pine',
         config = function()
             require('rose-pine').setup({
-                disable_background = true
             })
-            vim.cmd('colorscheme rose-pine')
         end
     },
 }

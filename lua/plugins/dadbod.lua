@@ -14,5 +14,13 @@ return {
         },
       },
     },
+    config = function()
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'dbout',
+        callback = function()
+          vim.keymap.set('n', 'gd', '<plug>(DBUI_JumpToForeignKey)')
+        end
+      })
+    end
   }
 }

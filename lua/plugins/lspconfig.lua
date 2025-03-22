@@ -5,8 +5,6 @@ return {
         -- Automatically install LSPs to stdpath for neovim
         { 'williamboman/mason.nvim', config = true },
         'williamboman/mason-lspconfig.nvim',
-        'nvimtools/none-ls.nvim',
-
         -- Useful status updates for LSP
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
         { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
@@ -22,14 +20,16 @@ return {
         vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
-        vim.api.nvim_create_user_command('InlayToggle', function()
+        local function toggle_inlay_hints()
             if vim.lsp.inlay_hint.is_enabled() then
                 vim.lsp.inlay_hint.enable(false)
             else
                 vim.lsp.inlay_hint.enable()
             end
-        end, {})
+        end
 
+        vim.api.nvim_create_user_command('InlayToggle', toggle_inlay_hints, {})
+        vim.keymap.set('n', '<leader>i', toggle_inlay_hints, { desc = 'Toggle inlay hints' })
         --
         -- [[ Configure LSP ]]
         --  This function gets run when an LSP connects to a particular buffer.
@@ -60,12 +60,6 @@ return {
             -- See `:help K` for why this keymap
             nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
             nmap('<leader>k', vim.lsp.buf.signature_help, 'Signature Documentation')
-
-            vim.keymap.set('n', '<leader>ff', vim.lsp.buf.format)
-
-            vim.keymap.set({ 'v', 'n' }, '=', function()
-                vim.lsp.buf.format()
-            end)
         end
 
         local servers = {
@@ -108,12 +102,12 @@ return {
             end
         }
         local lspconfig = require('lspconfig')
-        require('java').setup({
-            jdk = {
-                auto_install = true,
-                version = '21.0.4-tem',
-            }
-        })
+        -- require('java').setup({
+        --     jdk = {
+        --         auto_install = true,
+        --         version = '21.0.4-tem',
+        --     }
+        -- })
         lspconfig.jdtls.setup({
             on_attach = on_attach,
             capabilities = capabilities,
@@ -176,14 +170,6 @@ return {
             pattern = {
                 [".*%.component%.html"] = "htmlangular", -- Sets the filetype to `htmlangular` if it matches the pattern
             },
-        })
-
-        local null_ls = require('null-ls')
-        null_ls.setup({
-            sources = {
-                null_ls.builtins.formatting.prettier,
-                null_ls.builtins.formatting.google_java_format,
-            }
         })
     end
 }
