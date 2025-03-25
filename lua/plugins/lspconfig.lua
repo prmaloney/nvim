@@ -11,7 +11,8 @@ return {
 
         -- Additional lua configuration, makes nvim stuff amazing!
         'folke/neodev.nvim',
-        'saghen/blink.cmp'
+        'hrsh7th/nvim-cmp',
+        'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
         -- Diagnostic keymaps
@@ -19,6 +20,33 @@ return {
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
         vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+        local cmp = require('cmp')
+        cmp.setup({
+            mapping = {
+                ['<C-p>'] = cmp.mapping.select_prev_item(),
+                ['<C-n>'] = cmp.mapping.select_next_item(),
+                ['<Up>'] = cmp.mapping.select_prev_item(),
+                ['<Down>'] = cmp.mapping.select_next_item(),
+                ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+                ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                ['<C-Space>'] = cmp.mapping.complete(),
+                ['<C-e>'] = cmp.mapping.close(),
+                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+            },
+            window = {
+                completion = cmp.config.window.bordered(),
+                documentation = cmp.config.window.bordered(),
+            },
+            sources = cmp.config.sources({
+                { name = 'nvim_lsp' },
+                { name = 'vsnip' }, -- For vsnip users.
+            }, {
+                { name = 'buffer' },
+            })
+        })
+
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
         local function toggle_inlay_hints()
             if vim.lsp.inlay_hint.is_enabled() then
@@ -81,9 +109,6 @@ return {
         require('neodev').setup()
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
-
         -- Ensure the servers above are installed
         local mason_lspconfig = require 'mason-lspconfig'
 
@@ -93,6 +118,7 @@ return {
 
         mason_lspconfig.setup_handlers {
             function(server_name)
+                -- print('setting up ' .. server_name .. ' capabilities ' .. vim.inspect(capabilities))
                 require('lspconfig')[server_name].setup {
                     capabilities = capabilities,
                     on_attach = on_attach,
@@ -126,6 +152,16 @@ return {
                 }
             }
         })
+        lspconfig.lua_ls.setup {
+            capabilities = capabilities,
+            on_attach = on_attach,
+            settings = {
+                Lua = {
+                    workspace = { checkThirdParty = false },
+                    telemetry = { enable = false },
+                },
+            },
+        }
         lspconfig.ts_ls.setup {
             capabilities = capabilities,
             init_options = {

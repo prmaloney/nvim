@@ -1,15 +1,13 @@
 return {
     "scalameta/nvim-metals",
     dependencies = {
-        "nvim-lua/plenary.nvim",
-        "saghen/blink.cmp"
+        'hrsh7th/nvim-cmp',
+        'hrsh7th/cmp-nvim-lsp',
     },
     ft = { "scala", "sbt" },
     opts = function()
         local metals_config = require("metals").bare_config()
-        local capabilities = require('blink.cmp').get_lsp_capabilities(metals_config.capabilities)
-        print(vim.inspect(capabilities))
-        metals_config.capabilities = capabilities
+        metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
         metals_config.on_attach = function(client, bufnr)
             local nmap = function(keys, func, desc)
                 if desc then
