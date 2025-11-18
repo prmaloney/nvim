@@ -1,29 +1,45 @@
 return {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+
     dependencies = {
         -- Automatically install LSPs to stdpath for neovim
         { 'williamboman/mason.nvim', config = true },
         'williamboman/mason-lspconfig.nvim',
         -- Useful status updates for LSP
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-        { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
+        { 'j-hui/fidget.nvim',       tag = 'legacy', opts = { window = { border = "rounded" } } },
 
         -- Additional lua configuration, makes nvim stuff amazing!
         'folke/neodev.nvim',
         'hrsh7th/nvim-cmp',
+        'zbirenbaum/copilot.lua',
         'hrsh7th/cmp-nvim-lsp',
     },
+    opts = {
+    },
     config = function()
-        -- Diagnostic keymaps
-        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-        vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-        vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-        vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
         local cmp = require('cmp')
+        cmp.setup.cmdline(':', {
+            sources = cmp.config.sources({
+                { name = 'cmdline' }, -- Priority 1
+                { name = 'path' },    -- Priority 2
+            })
+        })
         cmp.setup({
             mapping = {
+                ['<Tab>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        local entry = cmp.get_selected_entry()
+                        if not entry then
+                            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                        end
+                        cmp.confirm()
+                    else
+                        print('fuck')
+                        fallback()
+                    end
+                end, { "i", "s" }),
                 ['<C-p>'] = cmp.mapping.select_prev_item(),
                 ['<C-n>'] = cmp.mapping.select_next_item(),
                 ['<Up>'] = cmp.mapping.select_prev_item(),
@@ -40,9 +56,9 @@ return {
             },
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
-                { name = 'vsnip' }, -- For vsnip users.
-            }, {
+                { name = 'vim-dadbod-completion' },
                 { name = 'buffer' },
+                { name = 'copilot' },
             })
         })
 
@@ -74,34 +90,31 @@ return {
                 vim.lsp.inlay_hint.enable(true)
             end
 
-            nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-            nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
-            nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-            nmap('gt', vim.lsp.buf.type_definition, '[G]oto [T]ype definition')
-            nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-            nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-            nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-            nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-            nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-            -- See `:help K` for why this keymap
-            nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-            nmap('<leader>k', vim.lsp.buf.signature_help, 'Signature Documentation')
+            vim.diagnostic.config({ virtual_text = true })
+            require('prmaloney.keymaps').lsp_keymaps()
         end
 
         local servers = {
-            svelte = {
-                filetypes = { 'svelte', 'svx' }
-            },
             lua_ls = {
                 Lua = {
-                    workspace = { checkThirdParty = false },
+                    workspace = { library = vim.api.nvim_get_runtime_file("", true) },
                     telemetry = { enable = false },
                 },
             },
             ts_ls = {
                 filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' }
+            },
+            tailwindcss = {
+                filetypes = { 'html', 'typescript', 'typescriptreact', 'javascript', 'javascriptreact', 'css', 'scss',
+                    'sass', 'htmlangular', 'less', 'svelte', 'vue', 'astro' },
+            },
+            angularls = {
+                -- root_dir = require('lspconfig.util').root_pattern("angular.json", "package.json", "tsconfig.json",
+                --     "jsconfig.json"),
+                filetypes = { 'htmlangular', 'typescript' },
+            },
+            eslint = {
+                filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx', 'htmlangular' }
             },
         }
 
@@ -114,19 +127,20 @@ return {
 
         mason_lspconfig.setup {
             ensure_installed = vim.tbl_keys(servers),
+            automatic_enable = true
         }
 
-        mason_lspconfig.setup_handlers {
-            function(server_name)
-                -- print('setting up ' .. server_name .. ' capabilities ' .. vim.inspect(capabilities))
-                require('lspconfig')[server_name].setup {
-                    capabilities = capabilities,
-                    on_attach = on_attach,
-                    settings = servers[server_name],
-                    filetypes = (servers[server_name] or {}).filetypes,
-                }
-            end
-        }
+        -- mason_lspconfig.setup_handlers {
+        --     function(server_name)
+        --         -- print('setting up ' .. server_name .. ' capabilities ' .. vim.inspect(capabilities))
+        --         require('lspconfig')[server_name].setup {
+        --             capabilities = capabilities,
+        --             on_attach = on_attach,
+        --             settings = servers[server_name],
+        --             filetypes = (servers[server_name] or {}).filetypes,
+        --         }
+        --     end
+        -- }
         local lspconfig = require('lspconfig')
         -- require('java').setup({
         --     jdk = {
@@ -134,74 +148,100 @@ return {
         --         version = '21.0.4-tem',
         --     }
         -- })
-        lspconfig.jdtls.setup({
-            on_attach = on_attach,
+        -- lspconfig.jdtls.setup({
+        --     on_attach = on_attach,
+        --     capabilities = capabilities,
+        --     settings = {
+        --         java = {
+        --             home = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
+        --             configuration = {
+        --                 runtimes = {
+        --                     {
+        --                         name = "JavaSE-21",
+        --                         path = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
+        --                         default = true,
+        --                     }
+        --                 }
+        --             }
+        --         }
+        --     }
+        -- })
+        -- lspconfig.lua_ls.setup {
+        --     capabilities = capabilities,
+        --     on_attach = on_attach,
+        --     settings = {
+        --         Lua = {
+        --             workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+        --             diagnostics = { globals = { "vim" } },
+        --             telemetry = { enable = false },
+        --         },
+        --     },
+        -- }
+        -- iterate over servers and setup with vim.lsp.config
+        for server_name, settings in pairs(servers) do
+            -- print('setting up ' .. server_name .. ' capabilities ' .. vim.inspect(capabilities))
+            vim.lsp.config(server_name, {
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = settings,
+                filetypes = settings.filetypes,
+            })
+        end
+        -- vim.lsp.config("lua_ls", {
+        --     capabilities = capabilities,
+        --     on_attach = on_attach,
+        --     settings = servers.lua_ls,
+        -- })
+        -- vim.lsp.config("ts_ls", {
+        --     capabilities = capabilities,
+        --     on_attach = on_attach,
+        --     settings = servers.ts_ls,
+        -- })
+        -- lspconfig.ts_ls.setup {
+        --     capabilities = capabilities,
+        --     init_options = {
+        --         preferences = {
+        --             includeInlayParameterNameHints = "all",
+        --             includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        --             includeInlayFunctionParameterTypeHints = true,
+        --             includeInlayVariableTypeHints = true,
+        --             includeInlayPropertyDeclarationTypeHints = true,
+        --             includeInlayFunctionLikeReturnTypeHints = true,
+        --             includeInlayEnumMemberValueHints = true,
+        --             importModuleSpecifierPreference = 'non-relative'
+        --         },
+        --     },
+        --     on_attach = on_attach,
+        --     filetypes = { 'js', 'ts', 'jsx', 'tsx', 'mjs', 'cjs' },
+        -- }
+        -- lspconfig.sourcekit.setup {
+        --     cmd = { '/usr/bin/sourcekit-lsp' }
+        -- }
+        -- lspconfig.gopls.setup {
+        --     capabilities = capabilities,
+        --     on_attach = function(client, bufnr)
+        --         on_attach(client, bufnr)
+        --         vim.keymap.set('n', '<leader>ee', function()
+        --             -- insert if err != nil {\nreturn err\n} below my cursor
+        --             vim.api.nvim_put({ 'if err != nil {', '\treturn err', '}' }, 'l', false, true)
+        --         end)
+        --     end
+        -- }
+        -- lspconfig.svelte.setup({
+        --     capabilities = capabilities,
+        --     on_attach = on_attach
+        -- })
+        --
+        -- lspconfig.angularls.setup {
+        --     root_dir = require('lspconfig.util').root_pattern("angular.json", "package.json", "tsconfig.json", "jsconfig.json"),
+        --     on_attach = on_attach,
+        --     capabilities = capabilities,
+        --     filetypes = { 'htmlangular', 'typescript' },
+        -- }
+        vim.lsp.config("*", {
             capabilities = capabilities,
-            settings = {
-                java = {
-                    home = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
-                    configuration = {
-                        runtimes = {
-                            {
-                                name = "JavaSE-21",
-                                path = vim.fn.expand('~/.sdkman/candidates/java/21.0.4-tem'),
-                                default = true,
-                            }
-                        }
-                    }
-                }
-            }
+            on_attach = on_attach,
         })
-        lspconfig.lua_ls.setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = {
-                Lua = {
-                    workspace = { checkThirdParty = false },
-                    telemetry = { enable = false },
-                },
-            },
-        }
-        lspconfig.ts_ls.setup {
-            capabilities = capabilities,
-            init_options = {
-                preferences = {
-                    includeInlayParameterNameHints = "all",
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = true,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayFunctionLikeReturnTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
-                    importModuleSpecifierPreference = 'non-relative'
-                },
-            },
-            on_attach = on_attach,
-            filetypes = { 'js', 'ts', 'jsx', 'tsx', 'mjs', 'cjs' },
-        }
-        lspconfig.sourcekit.setup {
-            cmd = { '/usr/bin/sourcekit-lsp' }
-        }
-        lspconfig.gopls.setup {
-            capabilities = capabilities,
-            on_attach = function(client, bufnr)
-                on_attach(client, bufnr)
-                vim.keymap.set('n', '<leader>ee', function()
-                    -- insert if err != nil {\nreturn err\n} below my cursor
-                    vim.api.nvim_put({ 'if err != nil {', '\treturn err', '}' }, 'l', false, true)
-                end)
-            end
-        }
-        lspconfig.svelte.setup({
-            capabilities = capabilities,
-            on_attach = on_attach
-        })
-
-        lspconfig.angularls.setup {
-            root_dir = require('lspconfig.util').root_pattern("angular.json", "package.json", "tsconfig.json", "jsconfig.json"),
-            on_attach = on_attach,
-            capabilities = capabilities,
-        }
         vim.filetype.add({
             pattern = {
                 [".*%.component%.html"] = "htmlangular", -- Sets the filetype to `htmlangular` if it matches the pattern

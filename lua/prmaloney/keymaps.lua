@@ -34,3 +34,32 @@ vim.keymap.set('x', '<leader>p', '\"_dP')
 vim.keymap.set('n', '<leader>d', '\"_d')
 vim.keymap.set('v', '<leader>d', '\"_d')
 
+local M = {}
+
+M.lsp_keymaps = function()
+	vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true, border = 'rounded' } end,
+		{ desc = 'Next Diagnostic' })
+	vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true, border = 'rounded' } end,
+		{ desc = 'Prev Diagnostic' })
+	vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float' })
+	vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Set Location List' })
+	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = '[R]e[n]ame' })
+	vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
+
+	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
+	vim.keymap.set('n', 'gD', '<cmd>vsplit<cr>gd', { desc = '[G]oto [D]efinition split' })
+	vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, { desc = '[G]oto [T]ype definition' })
+	vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
+	vim.keymap.set('n', 'gI', require('telescope.builtin').lsp_implementations, { desc = '[G]oto [I]mplementation' })
+	vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, { desc = 'Type [D]efinition' })
+	vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols,
+		{ desc = '[D]ocument [S]ymbols' })
+	vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols,
+		{ desc = '[W]orkspace [S]ymbols' })
+
+	-- See `:help K` for why this keymap
+	vim.keymap.set('n', 'K', function() vim.lsp.buf.hover { border = 'rounded' } end, { desc = 'Hover Documentation' })
+	vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
+end
+
+return M

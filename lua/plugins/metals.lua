@@ -1,41 +1,66 @@
 return {
     "scalameta/nvim-metals",
     dependencies = {
-        'hrsh7th/nvim-cmp',
-        'hrsh7th/cmp-nvim-lsp',
+        "nvim-lua/plenary.nvim",
+        {
+            "rcarriga/nvim-dap-ui",
+            dependencies = { {
+                "mfussenegger/nvim-dap",
+                config = function()
+                    -- Debug settings if you're using nvim-dap
+                    local dap = require("dap")
+                    require("dapui").setup()
+                    vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = '', numhl = '' })
+
+                    vim.keymap.set("n", "<leader>dc", "<cmd>DapContinue<cr>")
+                    vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<cr>")
+                    vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<cr>")
+
+                    dap.configurations.scala = {
+                        {
+                            type = "scala",
+                            request = "launch",
+                            name = "Run",
+                            metals = {
+                                runType = "run",
+                            },
+                        },
+                        {
+                            type = "scala",
+                            request = "launch",
+                            name = "RunOrTest",
+                            metals = {
+                                runType = "runOrTestFile",
+                                --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+                            },
+                        },
+                        {
+                            type = "scala",
+                            request = "launch",
+                            name = "Test Target",
+                            metals = {
+                                runType = "testTarget",
+                            },
+                        },
+                    }
+                end
+            }, "nvim-neotest/nvim-nio" }
+        }
+        ,
     },
-    ft = { "scala", "sbt" },
+    ft = { "scala", "sbt", "mill" },
     opts = function()
         local metals_config = require("metals").bare_config()
         metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
+        metals_config.init_options.statusBarProvider = "off"
         metals_config.on_attach = function(client, bufnr)
-            local nmap = function(keys, func, desc)
-                if desc then
-                    desc = 'LSP: ' .. desc
-                end
-
-                vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-            end
-
             if client.server_capabilities.inlayHintProvider then
                 vim.lsp.inlay_hint.enable(true)
             end
 
-            nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-            nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+            require('prmaloney.keymaps').lsp_keymaps()
 
-            nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-            nmap('gt', vim.lsp.buf.type_definition, '[G]oto [T]ype definition')
-            nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-            nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-            nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-            nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-            nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-            nmap('<leader>mca', require('telescope').extensions.metals.commands, '[W]orkspace [S]ymbols')
-
-            -- See `:help K` for why this keymap
-            nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-            nmap('<leader>k', vim.lsp.buf.signature_help, 'Signature Documentation')
+            require("metals").setup_dap()
         end
 
         return metals_config

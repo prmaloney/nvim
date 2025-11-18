@@ -9,4 +9,5 @@ return {
         end
     },
     { 'numToStr/Comment.nvim',           opts = {} },
+    { 'yorickpeterse/nvim-pqf',          opts = {} },
 }
