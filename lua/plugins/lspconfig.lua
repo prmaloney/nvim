@@ -36,7 +36,6 @@ return {
                         end
                         cmp.confirm()
                     else
-                        print('fuck')
                         fallback()
                     end
                 end, { "i", "s" }),
@@ -123,7 +122,7 @@ return {
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         -- Ensure the servers above are installed
-        local mason_lspconfig = require 'mason-lspconfig'
+        local mason_lspconfig = require('mason-lspconfig')
 
         mason_lspconfig.setup {
             ensure_installed = vim.tbl_keys(servers),
@@ -141,7 +140,7 @@ return {
         --         }
         --     end
         -- }
-        local lspconfig = require('lspconfig')
+        -- local lspconfig = require('lspconfig')
         -- require('java').setup({
         --     jdk = {
         --         auto_install = true,
@@ -179,7 +178,6 @@ return {
         -- }
         -- iterate over servers and setup with vim.lsp.config
         for server_name, settings in pairs(servers) do
-            -- print('setting up ' .. server_name .. ' capabilities ' .. vim.inspect(capabilities))
             vim.lsp.config(server_name, {
                 capabilities = capabilities,
                 on_attach = on_attach,

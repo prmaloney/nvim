@@ -9,12 +9,16 @@ return {
                 config = function()
                     -- Debug settings if you're using nvim-dap
                     local dap = require("dap")
-                    require("dapui").setup()
+                    local dap_ui = require("dapui")
+                    dap_ui.setup()
+
                     vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = '', numhl = '' })
 
                     vim.keymap.set("n", "<leader>dc", "<cmd>DapContinue<cr>")
                     vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<cr>")
                     vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<cr>")
+
+                    vim.keymap.set("n", "<leader>du", dap_ui.open)
 
                     dap.configurations.scala = {
                         {

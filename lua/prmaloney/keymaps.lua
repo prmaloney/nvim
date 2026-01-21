@@ -5,8 +5,8 @@
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- window stuff
-vim.keymap.set('n', '<leader>v', '<C-w>v')
-vim.keymap.set('n', '<leader>s', '<C-w>s')
+vim.keymap.set('n', '<leader>sv', '<C-w>v')
+vim.keymap.set('n', '<leader>sh', '<C-w>s')
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
 vim.keymap.set('n', '<leader>gs', '<cmd>G<cr>')
@@ -37,9 +37,9 @@ vim.keymap.set('v', '<leader>d', '\"_d')
 local M = {}
 
 M.lsp_keymaps = function()
-	vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true, border = 'rounded' } end,
+	vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = { border = 'rounded' } } end,
 		{ desc = 'Next Diagnostic' })
-	vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true, border = 'rounded' } end,
+	vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = { border = 'rounded' } } end,
 		{ desc = 'Prev Diagnostic' })
 	vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float' })
 	vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Set Location List' })

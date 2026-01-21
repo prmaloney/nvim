@@ -17,6 +17,8 @@ return {
                         vim.fn.setreg("+", vim.fn.getreg(vim.v.register))
                     end,
                 },
+                ['<C-h>'] = false,
+                ["<C-l>"] = false,
             },
         })
         vim.keymap.set('n', '<leader>pv', '<cmd>Oil<cr>')
