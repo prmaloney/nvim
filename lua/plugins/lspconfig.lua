@@ -11,65 +11,23 @@ return {
         { 'j-hui/fidget.nvim',       tag = 'legacy', opts = { window = { border = "rounded" } } },
 
         -- Additional lua configuration, makes nvim stuff amazing!
-        'folke/neodev.nvim',
-        'hrsh7th/nvim-cmp',
+        {
+            "folke/lazydev.nvim",
+            ft = "lua", -- only load on lua files
+            opts = {
+                library = {
+                    -- See the configuration section for more details
+                    -- Load luvit types when the `vim.uv` word is found
+                    { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+                },
+            },
+        },
         'zbirenbaum/copilot.lua',
         'hrsh7th/cmp-nvim-lsp',
     },
     opts = {
     },
     config = function()
-        local cmp = require('cmp')
-        -- cmp.setup.cmdline(':', {
-        --     sources = cmp.config.sources({
-        --         { name = 'cmdline' }, -- Priority 1
-        --         { name = 'path' },    -- Priority 2
-        --     })
-        -- })
-        cmp.setup({
-            mapping = {
-                ['<Tab>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        local entry = cmp.get_selected_entry()
-                        if not entry then
-                            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-                        end
-                        cmp.confirm()
-                    else
-                        fallback()
-                    end
-                end, { "i", "s" }),
-                ['<C-p>'] = cmp.mapping.select_prev_item(),
-                ['<C-n>'] = cmp.mapping.select_next_item(),
-                ['<Up>'] = cmp.mapping.select_prev_item(),
-                ['<Down>'] = cmp.mapping.select_next_item(),
-                ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                ['<C-Space>'] = cmp.mapping.complete(),
-                ['<C-e>'] = cmp.mapping.close(),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }),
-            },
-            view = {
-                entries = { name = "custom" },
-            },
-            window = {
-                completion = {
-                    border = "single",
-                    winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-                },
-                documentation = {
-                    border = "single",
-                    winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-                },
-            },
-            sources = cmp.config.sources({
-                { name = 'nvim_lsp' },
-                { name = 'vim-dadbod-completion' },
-                { name = 'buffer' },
-                { name = 'copilot' },
-            })
-        })
-
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
         local function toggle_inlay_hints()
@@ -125,9 +83,6 @@ return {
                 filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx', 'htmlangular' }
             },
         }
-
-        -- Setup neovim lua configuration
-        require('neodev').setup()
 
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         -- Ensure the servers above are installed

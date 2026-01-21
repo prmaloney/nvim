@@ -37,6 +37,8 @@ vim.keymap.set('v', '<leader>d', '\"_d')
 local M = {}
 
 M.lsp_keymaps = function()
+	local fzf = require('fzf-lua')
+	local actions = require('fzf-lua.actions')
 	vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = { border = 'rounded' } } end,
 		{ desc = 'Next Diagnostic' })
 	vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = { border = 'rounded' } } end,
@@ -46,15 +48,20 @@ M.lsp_keymaps = function()
 	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = '[R]e[n]ame' })
 	vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
 
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
-	vim.keymap.set('n', 'gD', '<cmd>vsplit<cr>gd', { desc = '[G]oto [D]efinition split' })
-	vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, { desc = '[G]oto [T]ype definition' })
-	vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
-	vim.keymap.set('n', 'gI', require('telescope.builtin').lsp_implementations, { desc = '[G]oto [I]mplementation' })
-	vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, { desc = 'Type [D]efinition' })
-	vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols,
+	vim.keymap.set('n', 'gd', fzf.lsp_definitions, { desc = '[G]oto [D]efinition' })
+	vim.keymap.set('n', 'gD', function()
+		fzf.lsp_definitions({
+			actions = { ['default'] = actions.file_vsplit },
+			jump_to_single_result = true,
+		})
+	end, { desc = '[G]oto [D]efinition split' })
+	vim.keymap.set('n', 'gt', fzf.lsp_type_definitions, { desc = '[G]oto [T]ype definition' })
+	vim.keymap.set('n', 'gr', fzf.lsp_references, { desc = '[G]oto [R]eferences' })
+	vim.keymap.set('n', 'gI', fzf.lsp_implementations, { desc = '[G]oto [I]mplementation' })
+	vim.keymap.set('n', '<leader>D', fzf.lsp_type_definitions, { desc = 'Type [D]efinition' })
+	vim.keymap.set('n', '<leader>ds', fzf.lsp_document_symbols,
 		{ desc = '[D]ocument [S]ymbols' })
-	vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols,
+	vim.keymap.set('n', '<leader>ws', fzf.lsp_workspace_symbols,
 		{ desc = '[W]orkspace [S]ymbols' })
 
 	-- See `:help K` for why this keymap
