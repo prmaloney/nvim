@@ -42,6 +42,8 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+vim.o.winborder = 'rounded'
+
 -- Keep signcolumn on by default
 vim.wo.signcolumn = 'yes'
 

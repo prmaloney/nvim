@@ -20,12 +20,12 @@ return {
     },
     config = function()
         local cmp = require('cmp')
-        cmp.setup.cmdline(':', {
-            sources = cmp.config.sources({
-                { name = 'cmdline' }, -- Priority 1
-                { name = 'path' },    -- Priority 2
-            })
-        })
+        -- cmp.setup.cmdline(':', {
+        --     sources = cmp.config.sources({
+        --         { name = 'cmdline' }, -- Priority 1
+        --         { name = 'path' },    -- Priority 2
+        --     })
+        -- })
         cmp.setup({
             mapping = {
                 ['<Tab>'] = cmp.mapping(function(fallback)
@@ -49,9 +49,18 @@ return {
                 ['<C-e>'] = cmp.mapping.close(),
                 ['<CR>'] = cmp.mapping.confirm({ select = true }),
             },
+            view = {
+                entries = { name = "custom" },
+            },
             window = {
-                completion = cmp.config.window.bordered(),
-                documentation = cmp.config.window.bordered(),
+                completion = {
+                    border = "single",
+                    winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+                },
+                documentation = {
+                    border = "single",
+                    winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+                },
             },
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
