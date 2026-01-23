@@ -19,5 +19,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("prmaloney.settings")
 require("prmaloney.keymaps")
+require("prmaloney.lsp")
 require("lazy").setup("plugins")
 

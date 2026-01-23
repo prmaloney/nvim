@@ -74,3 +74,25 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = highlight_group,
 	pattern = "*",
 })
+
+-- Ensure Fidget uses an opaque background even if the colorscheme doesn't set one.
+local function set_fidget_highlights()
+	local float_hl = vim.api.nvim_get_hl(0, { name = "NormalFloat" })
+	local pmenu_hl = vim.api.nvim_get_hl(0, { name = "Pmenu" })
+	local bg = float_hl.bg or pmenu_hl.bg
+	local fg = float_hl.fg
+
+	if bg then
+		vim.api.nvim_set_hl(0, "FidgetTask", { fg = fg, bg = bg })
+	else
+		vim.api.nvim_set_hl(0, "FidgetTask", { link = "NormalFloat" })
+	end
+	vim.api.nvim_set_hl(0, "FidgetTitle", { link = "FloatTitle" })
+end
+
+local fidget_group = vim.api.nvim_create_augroup("FidgetHighlights", { clear = true })
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = set_fidget_highlights,
+	group = fidget_group,
+})
+set_fidget_highlights()
