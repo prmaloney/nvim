@@ -1,6 +1,16 @@
 return {
     -- some lsp helper plugins
-    { 'j-hui/fidget.nvim', tag = 'legacy', opts = { window = { border = "rounded" } } },
+    {
+        'j-hui/fidget.nvim',
+        opts = {
+            notification = {
+                window = {
+                    border = "rounded",
+                    winblend = 0
+                }
+            }
+        }
+    },
     {
         "folke/lazydev.nvim",
         ft = "lua",
@@ -10,6 +20,5 @@ return {
             },
         },
     },
-    'zbirenbaum/copilot.lua',
     'hrsh7th/cmp-nvim-lsp',
 }

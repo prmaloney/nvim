@@ -1,17 +1,56 @@
 return {
     "hrsh7th/nvim-cmp",
+    dependencies = {
+        {
+            "zbirenbaum/copilot.lua",
+            dependencies = {
+                "copilotlsp-nvim/copilot-lsp",
+                config = function()
+                    vim.g.copilot_nes_debounce = 500
+                end,
+            },
+            cmd = "Copilot",
+            event = "InsertEnter",
+            config = function()
+                require("copilot").setup({
+                    suggestion = { auto_trigger = true },
+                    nes = {
+                        enabled = true,
+                        keymap = {
+                            accept_and_goto = "<leader>p",
+                            accept = false,
+                            dismiss = "<Esc>",
+                        },
+                    }
+                })
+            end,
+        },
+    },
     event = "InsertEnter",
     config = function()
         local cmp = require("cmp")
         cmp.setup({
             mapping = {
                 ["<Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
+                    local copilot = require("copilot.suggestion")
+                    if copilot.is_visible() then
+                        copilot.accept()
+                    elseif cmp.visible() then
                         local entry = cmp.get_selected_entry()
                         if not entry then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         end
                         cmp.confirm()
+                    else
+                        fallback()
+                    end
+                end, { "i", "s" }),
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
+                    local copilot = require("copilot.suggestion")
+                    if copilot.is_visible() then
+                        copilot.next()
+                    elseif cmp.visible() then
+                        cmp.select_prev_item()
                     else
                         fallback()
                     end
@@ -38,7 +77,6 @@ return {
                 { name = "lazydev",              group_index = 0 },
                 { name = "vim-dadbod-completion" },
                 { name = "buffer" },
-                { name = "copilot" },
             }),
         })
     end,
