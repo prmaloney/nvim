@@ -5,25 +5,11 @@ return {
         { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
         {
             "zbirenbaum/copilot.lua",
-            dependencies = {
-                "copilotlsp-nvim/copilot-lsp",
-                config = function()
-                    vim.g.copilot_nes_debounce = 500
-                end,
-            },
             cmd = "Copilot",
             event = "InsertEnter",
             config = function()
                 require("copilot").setup({
                     suggestion = { auto_trigger = true },
-                    nes = {
-                        enabled = true,
-                        keymap = {
-                            accept_and_goto = "<leader>p",
-                            accept = false,
-                            dismiss = "<Esc>",
-                        },
-                    }
                 })
             end,
         },
@@ -57,10 +43,10 @@ return {
         },
 
         appearance = {
-            nerd_font_variant = 'mono'
+            nerd_font_variant = 'normal'
         },
 
-        completion = { documentation = { auto_show = false } },
+        completion = { documentation = { auto_show = true } },
 
         sources = {
             default = { 'lsp', 'path', 'snippets', 'buffer' },

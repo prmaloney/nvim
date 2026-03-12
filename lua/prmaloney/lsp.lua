@@ -37,6 +37,18 @@ local servers = {
         cmd = { "typescript-language-server", "--stdio" },
         root_markers = { 'package.json', '.git' },
     },
+    pylsp = {
+        cmd = { 'pylsp' },
+        filetypes = { 'python' },
+        root_markers = {
+            'pyproject.toml',
+            'setup.py',
+            'setup.cfg',
+            'requirements.txt',
+            'Pipfile',
+            '.git',
+        },
+    },
     tailwindcss = {
         cmd = { "tailwindcss-language-server", "--stdio" },
         root_markers = { 'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs', 'tailwind.config.ts',
