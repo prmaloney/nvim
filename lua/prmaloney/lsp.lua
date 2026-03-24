@@ -81,17 +81,22 @@ local servers = {
     },
     eslint = {
         cmd = { "vscode-eslint-language-server", "--stdio" },
-        root_markers = {
-            'eslint.config.js',
-            '.eslintrc',
-            '.eslintrc.js',
-            '.eslintrc.cjs',
-            '.eslintrc.json',
-            '.eslintrc.yaml',
-            '.eslintrc.yml',
-            'package.json',
-            '.git',
-        },
+        root_dir = function(bufnr)
+            local root = vim.fs.root(bufnr, {
+                'eslint.config.js',
+                '.eslintrc',
+                '.eslintrc.js',
+                '.eslintrc.cjs',
+                '.eslintrc.json',
+                '.eslintrc.yaml',
+                '.eslintrc.yml',
+                'package.json',
+                '.git',
+            })
+            if root and vim.uv.fs_stat(root .. '/node_modules/.bin/eslint') then
+                return root
+            end
+        end,
         filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
         settings = {
             validate = 'on',
